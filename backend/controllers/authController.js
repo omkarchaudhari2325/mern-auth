@@ -4,7 +4,14 @@ import { errorHandler } from "../utils/error.js";
 export const signup = async (req,res) =>{
     // console.log(req.body);
     const {username,email,password} = req.body;
-    const hashedPassword = await bcrypt.hash(password,10);
+    if(!username || !email || !password){
+        return res.status(500).json({
+            success : false,
+            message : "Please fill all the  fields"
+        })
+    }
+    const salt = bcrypt.genSaltSync(10);
+    const hashedPassword =  bcrypt.hashSync(password,salt);
     try{
             const existingUser = await User.findOne({email});
             console.log(existingUser)
