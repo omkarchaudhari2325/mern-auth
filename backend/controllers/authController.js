@@ -1,6 +1,9 @@
 import User from "../models/User.js"
 import bcrypt from "bcryptjs"
 import { errorHandler } from "../utils/error.js";
+import jwt from "jsonwebtoken"
+import dotenv from "dotenv"
+dotenv.config();
 export const signup = async (req,res) =>{
     // console.log(req.body);
     const {username,email,password} = req.body;
@@ -41,4 +44,35 @@ export const signup = async (req,res) =>{
 
 
 
+}
+export const signin = async (req,res,next) =>{
+    const {email,password} = req.body;
+    if(!email || !password){
+        return res.status(401).json({
+            success : false,
+            message : "Please fill all the input fields"
+        })
+    }
+    try{
+        const validUser = await User.findOne({email});
+        if(!validUser) {
+            return next(errorHandler(404,"User not valid"))
+        }
+        const validPassword = bcrypt.compareSync(password , validUser.password);
+        if(!validPassword){
+            return next(errorHandler(401,"Wrong Credentails"));
+        }
+        validUser.password = undefined;
+        const token = jwt.sign({id : validUser._id},process.env.JWT_SECRET,{
+            expiresIn : "3h"
+        })
+        res.cookie("access-token",token,{
+            httpOnly : true
+        }).status(200).json({
+            user : validUser
+        })
+
+    }catch(err){
+        next(err);
+    }
 }
