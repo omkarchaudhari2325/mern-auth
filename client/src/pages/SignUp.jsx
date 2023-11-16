@@ -3,8 +3,9 @@ import React, { useState } from 'react'
 // import Link from "react-router-dom"
 import { ToastContainer,toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css'
-import { Link } from 'react-router-dom'
+import { Link,useNavigate } from 'react-router-dom'
 const SignUp = () => {
+  const navigate = useNavigate();
   const [formData,setFormData] = useState({});
   const [error,setError] = useState(false);
   const [loading,setLoading] = useState(false)
@@ -37,7 +38,8 @@ const SignUp = () => {
         })
         return;
       }
-      toast.success("Signup successfull , Please login")
+      toast.success("Signup successfull")
+      navigate("/sign-in");
 
     }
     catch(err){
@@ -55,9 +57,9 @@ const SignUp = () => {
         Sign Up
       </h1>
       <form action="" className='flex flex-col gap-4 my-7' onSubmit={handleSubmit}>
-        <input type="text" placeholder='Username' id='username' className='bg-slate-100 p-3 rounded-lg ' autoComplete='true'  onChange={handleChange}/>
-        <input type="email" placeholder='Email' id='email' className='bg-slate-100 p-3 rounded-lg' autoComplete='true'  onChange={handleChange}/>
-        <input type="password" placeholder='Password' id='password' className='bg-slate-100 p-3 rounded-lg '  autoComplete='true' onChange={handleChange}/>
+        <input type="text" placeholder='Username' id='username' className='bg-slate-100 p-3 rounded-lg ' autoComplete='on'  onChange={handleChange}/>
+        <input type="email" placeholder='Email' id='email' className='bg-slate-100 p-3 rounded-lg' autoComplete='on'  onChange={handleChange}/>
+        <input type="password" placeholder='Password' id='password' className='bg-slate-100 p-3 rounded-lg '  autoComplete='on' onChange={handleChange}/>
         <button disabled = {loading} className='bg-slate-700 rounded-lg uppercase hover:opacity-95 disabled:opacity-80 text-white p-3 '>
           {loading ? `Loading...` : `Sign Up`}
         </button>
